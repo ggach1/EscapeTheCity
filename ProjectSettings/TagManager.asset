@@ -44,9 +44,9 @@ TagManager:
   - name: Ground
     uniqueID: 2566198607
     locked: 0
-  - name: Agent
+  - name: Obstacle
     uniqueID: 3619162643
     locked: 0
-  - name: Obstacle
+  - name: Agent
     uniqueID: 3599570021
     locked: 0
