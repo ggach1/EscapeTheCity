@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CharacterController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public event Action<Vector2> OnMoveEvent;
+    public event Action<Vector2> OnLookEvent;
+
+    public void CallMoveEvent(Vector2 dir)
     {
-        
+        OnMoveEvent?.Invoke(dir);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CallLookEvent(Vector2 dir)
     {
-        
+        OnLookEvent?.Invoke(dir);
     }
 }
