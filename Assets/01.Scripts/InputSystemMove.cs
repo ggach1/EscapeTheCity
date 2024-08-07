@@ -2,31 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class InputSystemMove : MonoBehaviour
 {
-    private Vector3 _moveDir;
-    private float _moveSpeed = 5f;
+    private CharacterController _charController;
 
-    private void Update()
+    private Rigidbody2D _rigidbody;
+
+    private SpriteRenderer _charSpriteRenderer;
+
+    private Vector2 _direction;
+
+    [SerializeField][Range(5, 1000)] private float _speed;
+
+    private void Awake()
     {
-        bool hasControl = (_moveDir != Vector3.zero);
-
-        if (hasControl)
-        {
-            transform.rotation = Quaternion.LookRotation(_moveDir);
-            transform.Translate(Vector3.forward * _moveSpeed * Time.deltaTime);
-        }
+        _charController = gameObject.GetComponent<CharacterController>();
+        _rigidbody = gameObject.GetComponent<Rigidbody2D>();
+        _charSpriteRenderer = gameObject.GetComponentInChildren<SpriteRenderer>();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    private void Start()
     {
-        Vector2 input = context.ReadValue<Vector2>();
+        _charController.OnMoveEvent += Move;
+        _charController.OnLookEvent += Look;
+    }
 
-        if (input != null)
-        {
-            _moveDir = new Vector3(input.x, input.y, 0);
-            Debug.Log($"UNITY_EVENTS : {input.magnitude}");
-        }
+    private void FixedUpdate()
+    {
+        ApplayMovement();
+    }
+
+    public void Look(Vector2 dir)
+    {
+        _charSpriteRenderer.flipX = (dir.x < 0); // 2D Sprite를 뒤집어서 마우스 방향을 바라보게 만듦
+    }
+
+    public void Move(Vector2 dir)
+    {
+        _direction = dir; // 이동 방향 등록
+    }
+
+    public void ApplayMovement()
+    {
+        _rigidbody.velocity = _direction.normalized * _speed;
     }
 }
